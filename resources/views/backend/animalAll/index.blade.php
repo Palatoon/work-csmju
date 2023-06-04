@@ -46,13 +46,23 @@
                             @php
                                 $i = 0;
                             @endphp
-                            @foreach ($animall as $item)
+                            @foreach ($animal as $item)
                                 <tr>
                                     <td>{{ ++$i }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->name_en }}</td>
-                                    <td>{{ $item->name_en_type }}</td>
-                                    <td>{{"nooo"}}
+                                    <td>{{ $item->type->name_en }}</td>
+                                    <td>
+                                        {{-- {{$item->animal_attributes_name}}
+                                        {{$item->value}} --}}
+                                        {{-- {{$item->attributes}} --}}
+                                        @foreach ($item->attributes as $itemAttribute)
+                                            @if ($itemAttribute->attribute)
+                                                {{$itemAttribute->attribute->animal_attributes_name}}
+                                            @endif
+                                            {{$itemAttribute->value}}
+                                        @endforeach
+                                        
                                     </td>
                                     <td>
                                         <a href="{{ route('animalall.edit', ['animalall' => $item->id]) }}"

@@ -44,12 +44,16 @@
                                 {{-- @if ($animal->type_id == '0') --}}
                                 <option value="">-- Select --</option>
                                 @foreach ($animaltype as $item)
-                                    @if ($animal->type_id = null)
+                                    @if ($item->type_id = null)
                                         <option value="{{ $item->id }}">{{ $item->name_en }}</option>
                                     @else
                                         <option
-                                            value="{{ $item->id }}"@if ($item->id == $animal->type_id) {{ 'selected' }} @endif>
-                                            {{ $item->name }}</option>
+                                            value="{{ $item->id }}"
+                                            @if ($item->id == $item->type_id) {{ 'selected' }} 
+                                            @endif
+                                        >
+                                            {{ $item->name }}
+                                        </option>
                                     @endif
                                     {{-- <option
                                         value="{{ $item->id }}"@if ($item->id == $animal->type_id) {{ 'selected' }} @endif>

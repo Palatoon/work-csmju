@@ -24,53 +24,58 @@
                 class="form-horizontal form-bordered">
                 @csrf
                 @if (isset($animal_data))
-                    {{-- <input class="form-control" type="hidden" name="id" value="{{ $animal_data->animal_id }}" required /> --}}
+                    <input class="form-control" type="hidden" name="id" value="{{ $animal_id }}" required />
                 @endif
                 <div class="form-group">
                     <div class="pb-1">
                         <label class="font-weight-bold" for="name">Animal Name</label>
                         <input class="form-control" type="text" id="name" name="name"
-                            value="{{ $animal_data[$animal_id]['animal_name'] ?? ''}}" placeholder="Animal Name" required />
+                            value="{{ $animal_data[$animal_id]['animal_name'] ?? '' }}" placeholder="Animal Name"
+                            required />
                     </div>
                     <div class="pb-1">
                         <label class="font-weight-bold" for="name_en">Animal Name (English)</label>
-                        <input class="form-control" type="text" id="name_en" value="{{ $animal_data[$animal_id]['animal_name_en'] ?? '' }}"
-                            name="name_en" placeholder="Animal Name (English)">
+                        <input class="form-control" type="text" id="name_en"
+                            value="{{ $animal_data[$animal_id]['animal_name_en'] ?? '' }}" name="name_en"
+                            placeholder="Animal Name (English)">
                     </div>
                     <div class="pb-1">
                         <label class="font-weight-bold" for="type">Animal Type</label>
-                        <div class="pb-4">
-                            <label class="form-control" name="animal_type" id="animal_type_value" >
-                                {{$animal_data[$animal_id]['type_name'] ?? ''}}
+                        <input class="form-control" type="text" id="type_name"
+                            value="{{ $animal_data[$animal_id]['type_name'] ?? '' }}" name="type_name"
+                            placeholder="Animal Name (English)">
+                        {{-- <div class="pb-4">
+                            <label class="form-control" name="animal_type" id="animal_type_value">
+                                {{ $animal_data[$animal_id]['type_name'] ?? '' }}
                             </label>
-                        </div>
-@foreach ($animal_data[$animal_id]['animal_attributes'] as $attribute)
-                    <div class="pb-1">
-                        <label class="font-weight-bold" for="attribute_value">{{ $attribute['animal_attributes_name'] ?? '' }}</label>
-                        <input class="form-control" type="text" id="attribute_value" value="{{ $attribute['attribute_value'] ?? '' }}"
-                            name="attribute_value[]" >
+                        </div> --}}
+                        @foreach ($animal_data[$animal_id]['animal_attributes'] as $attribute)
+                            <div class="pb-1">
+                                <label class="font-weight-bold"
+                                    for="attribute_value">{{ $attribute['animal_attributes_name'] ?? '' }}</label>
+                                <input class="form-control" type="text" id="attribute_value"
+                                    value="{{ $attribute['attribute_value'] ?? '' }}" name="attribute_value[]">
+                            </div>
+                        @endforeach
                     </div>
-@endforeach
+
+                    <div align="right" class="col-md-12 col-sm-12">
+                        <button type="submit" class="btn btn-sm btn-primary m-r-5" id="btn-add-animal">Submit</button>
+                        <a href="{{ route('animalall.index') }}" class="btn btn-sm btn-default">Cancel</a>
+                    </div>
                 </div>
-
-                <div align="right" class="col-md-12 col-sm-12">
-                <button type="submit" class="btn btn-sm btn-primary m-r-5" id="btn-add-animal">Submit</button>
-                <a href="{{ route('animalall.index') }}" class="btn btn-sm btn-default">Cancel</a>
-            </div>
+            </form>
         </div>
-    </form>
-</div>
-@endsection
+    @endsection
 
-@push('scripts')
-
-<script>
-    $(document).ready(function() {
-        url = "{{ route('animal.get_attribute_value') }}",
-            $.get(url, function(data) {
-                $('#id_type').val(data.id);
-                console.log(JSON.stringify(data))
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                url = "{{ route('animal.get_attribute_value') }}",
+                    $.get(url, function(data) {
+                        $('#id_type').val(data.id);
+                        console.log(JSON.stringify(data))
+                    })
             })
-    })
-</script>
-@endpush
+        </script>
+    @endpush

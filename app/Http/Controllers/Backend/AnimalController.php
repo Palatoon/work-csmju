@@ -19,16 +19,12 @@ class AnimalController extends Controller
 {
     public function index(Request $request)
     {
-        //dd($request->all());
+    
         $animal = Animal::where('type_id', $request->type)->get();
-        $animall  = Animal::select('animals.*', 'animal_types.name as name_type', 'animal_types.name_en as name_en_type')
-            ->join('animal_types', 'animal_types.id', '=', 'animals.type_id')
-            ->where('type_id', $request->type)
-            ->get();
+
         return view('backend.animalAll.index', [
             'animal' => $animal,
             'type' => $request->type,
-            'animall' => $animall,
         ]);
     }
 
@@ -91,25 +87,30 @@ class AnimalController extends Controller
      */
     public function store(Request $request)
     {
-        $name = $request->name;
-        $name_en = $request->name_en;
-        $type_id = $request->animal_type;
+        // dd($request->all());
+        // dd($request->attribute_value);
+        
+        // Find animaltype data by name
+        $aniaml_type_id = AnimalType::where('name', $request->type_name)->first();
+        
+        // Update animal name first.
+        Animal::find($request->id)->update([
+            'name' =>  $request->name,
+            'name_en' => $request->name_en,
+            'type_id' => $aniaml_type_id->id
+        ]);
 
-        // Save animal name first.
-        $animal = new Animal();
-        $animal->name = $name;
-        $animal->name_en = $name_en;
-        $animal->type_id = $type_id;
-        $animal->save();
+        // Delete attributeValue befor create new attribute
+        AnimalAttributeValue::where('animal_id', $request->id)->delete();
 
-        // After that save animal attrubutes value
-        $arr = $request->values;
+        // After that Update animal attrubutes value
+        $arr = $request->attribute_value;
         $arr_length = count($arr);
         for ($i = 0; $i < $arr_length; $i++) {
             $att_id = array_keys($arr)[$i];
             $value = array_values($arr)[$i];
             $att_value = new AnimalAttributeValue();
-            $att_value->animal_id = $animal->id;
+            $att_value->animal_id = $request->id;
             $att_value->animal_attributes_id = $att_id;
             $att_value->value = $value;
             $att_value->save();
@@ -178,7 +179,7 @@ class AnimalController extends Controller
         
 
         $animal_id = 0;
-        // dd();
+        // dd($animal_data1);
         foreach ($animal_data1 as $item) {
             $animal_id = $item['animal_id'];
             if (!isset($animal_data[$animal_id])) {
@@ -199,7 +200,7 @@ class AnimalController extends Controller
             $animal_data4[$animal_id]['animal_attributes'][] = [
                 "animal_attributes_id" => $item['animal_attributes_id'],
                 "animal_attributes_name" => $animalAttribute == null ? '' : $animalAttribute,
-                "animal_attributes_name_en" => $animalAttribute == null ? '' : $animalAttribute->name_en,
+                "animal_attributes_name_en" => $animalAttribute == null ? '' : $animalAttribute->animal_attributes_name_en,
                 "attribute_value" => $item['attribute_value'],
             ];
             
@@ -212,6 +213,7 @@ class AnimalController extends Controller
                 "attribute_value" => $item['attribute_value'],
             ];
         }
+        // dd($animal_id);
         return view('backend.animalAll.edit', compact('animal_data', 'animal_id'));
     }
 

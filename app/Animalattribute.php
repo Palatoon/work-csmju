@@ -12,12 +12,11 @@ class AnimalAttribute extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-		'name_en',
-        'unit',
-        
+        'animal_attributes_name',
+        'animal_attributes_name_en',
+        'animal_attributes_unit'
     ];
-
+    
     protected $table = 'animal_attributes';
     
     public function values()
